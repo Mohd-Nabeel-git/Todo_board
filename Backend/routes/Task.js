@@ -4,7 +4,7 @@ import Log from '../models/Log.js';
 
 const router = express.Router();
 
-// GET all tasks (sorted by priority high to low)
+// ✅ GET all tasks (sorted by priority high to low)
 router.get('/', async (req, res) => {
   try {
     const tasks = await Todo.find().sort({ priority: -1 });
@@ -14,7 +14,18 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET last 20 logs
+// ✅ GET a single task by ID (required for UpdateTask.jsx)
+router.get('/:id', async (req, res) => {
+  try {
+    const task = await Todo.findById(req.params.id);
+    if (!task) return res.status(404).json({ message: 'Task not found' });
+    res.json(task);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// ✅ GET last 20 logs
 router.get('/logs/recent', async (req, res) => {
   try {
     const logs = await Log.find().sort({ timestamp: -1 }).limit(20);
@@ -24,7 +35,7 @@ router.get('/logs/recent', async (req, res) => {
   }
 });
 
-// CREATE new task
+// ✅ CREATE new task
 router.post('/', async (req, res) => {
   try {
     const task = await Todo.create(req.body);
@@ -41,19 +52,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET single task by ID (for editing)
-router.get('/:id', async (req, res) => {
-  try {
-    const task = await Todo.findById(req.params.id);
-    if (!task) return res.status(404).json({ message: 'Task not found' });
-    res.json(task);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-
-// UPDATE task with conflict detection
+// ✅ UPDATE task with conflict detection
 router.put('/:id', async (req, res) => {
   try {
     const existing = await Todo.findById(req.params.id);
@@ -83,7 +82,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE task
+// ✅ DELETE task
 router.delete('/:id', async (req, res) => {
   try {
     const task = await Todo.findByIdAndDelete(req.params.id);
@@ -100,7 +99,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// SMART ASSIGN: assign to least-loaded user
+// ✅ SMART ASSIGN: assign to least-loaded user
 router.post('/smart-assign/:id', async (req, res) => {
   try {
     const activeTasks = await Todo.find({ status: { $ne: 'Done' } });

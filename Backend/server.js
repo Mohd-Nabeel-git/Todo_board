@@ -21,7 +21,7 @@ app.use('/api/auth', authRoutes)
 
 // Root route (optional)
 app.get('/', (req, res) => {
-  res.send('Hello World lodu!')
+  res.send('Hello World !')
 })
 
 app.listen(port, () => {
